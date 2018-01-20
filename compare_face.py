@@ -16,29 +16,28 @@ def manageFaces(persons, face, encoding):
 		people.append(p1)
 		return (people,numPeople)
 
-	# print people[numPeople].getFaces()[0][1][0]
-	# if face_recognition.compare_faces(people[numPeople].getFaces()[0][1][0], encoding, tolerance=.4):
-	a = face_recognition.face_distance(people[numPeople-1].getFaces()[0][1][0], encoding)
-	print a
-	if len(a) == 1:
-		if a < .5:
-				people[numPeople-1].addFaces((face, encoding))
-		else:
-			print 'adding new person...'
-			numPeople+=1
-			p2 = Person(str(numPeople))
-			p2.addFaces((face, encoding))
-			people.append(p2)
-	else:
-		if a.all() < .5:
-			people[numPeople-1].addFaces((face, encoding))
-		else:
-			print 'adding new person...'
-			numPeople+=1
-			p2 = Person(str(numPeople))
-			p2.addFaces((face, encoding))
-			people.append(p2)
+	# print ([person.getPersonEncoding()[0] for person in people],len([person.getPersonEncoding() for person in people]))
 
+	compareList = []
+	for i in range(0,len(people)):
+		a = face_recognition.face_distance([person.getPersonEncoding()[0] for person in people][i], encoding)
+		print a
+		for x in a:
+			compareList.append(a)
+		# cv2.waitKey(0)
+
+	b = sorted(enumerate(compareList),key=lambda x:x[1])
+	print b
+
+	if b[0][1] < .62:
+			people[b[0][0]].addFaces((face, encoding))
+	else:
+		print 'adding new person...'
+		numPeople+=1
+		p2 = Person(str(numPeople))
+		p2.addFaces((face, encoding))
+		people.append(p2)
+	
 	return (people, numPeople)
 
 class Person():
@@ -55,3 +54,5 @@ class Person():
 		return self.faces
 	def getNumFrames(self):
 		return self.numFrames
+	def getPersonEncoding(self):
+		return self.faces[0][1]

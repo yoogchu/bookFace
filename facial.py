@@ -2,9 +2,15 @@ import numpy as np
 import cv2
 import face_recognition
 import compare_face as cf
+import os
+import glob
 
-cap = cv2.VideoCapture("fuhax.mov")
-face_folder = "faces/"
+video = 'fuhax1.mov'
+face_folder = video[0:video.index('.')]+'/'
+
+# cap = cv2.VideoCapture(video)
+cap = cv2.VideoCapture(0)
+
 
 (major_ver, minor_ver, subminor_ver) = (cv2.__version__).split('.')
 if int(major_ver)  < 3 :
@@ -56,10 +62,15 @@ while True:
 
             # Draw a box around the face
             cv2.rectangle(frame, (left, top), (right, bottom), (0, 0, 255), 2)
+
+            # # Label
+            # cv2.rectangle(frame, (left, bottom - 35), (right, bottom), (0, 0, 255), cv2.FILLED)
+            # font = cv2.FONT_HERSHEY_DUPLEX
+            # cv2.putText(frame, name, (left + 6, bottom - 6), font, 1.0, (255, 255, 255), 1)
+
             crop = frame[top:bottom, left:right]
 
             people = cf.manageFaces(people, crop, face_encodings)
-            # print [len(x.getFaces()) for x in people[0]]
             cv2.imshow('cropped', crop)
 
             #cv2.waitKey(0)
@@ -77,8 +88,19 @@ while True:
 cap.release()
 cv2.destroyAllWindows()
 
+
 print 'saving faces...'
 
+if not os.path.exists(face_folder):
+    print 'trying to make: ' + face_folder
+    try:
+        os.mkdir(face_folder)
+    except OSError as e:
+        print e
+else:
+    print 'deleting faces that already exist...'
+    for f in glob.glob(face_folder+'*'):
+        os.remove(f)
 for person in people[0]:
     count = 0
     for face in person.getFaces():
