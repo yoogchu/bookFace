@@ -20,14 +20,24 @@ def manageFaces(persons, face, encoding):
 	# if face_recognition.compare_faces(people[numPeople].getFaces()[0][1][0], encoding, tolerance=.4):
 	a = face_recognition.face_distance(people[numPeople-1].getFaces()[0][1][0], encoding)
 	print a
-	if a < .5:
-			people[numPeople-1].addFaces((face, encoding))
+	if len(a) == 1:
+		if a < .5:
+				people[numPeople-1].addFaces((face, encoding))
+		else:
+			print 'adding new person...'
+			numPeople+=1
+			p2 = Person(str(numPeople))
+			p2.addFaces((face, encoding))
+			people.append(p2)
 	else:
-		print 'adding new person'
-		numPeople+=1
-		p2 = Person(str(numPeople))
-		p2.addFaces((face, encoding))
-		people.append(p2)
+		if a.all() < .5:
+			people[numPeople-1].addFaces((face, encoding))
+		else:
+			print 'adding new person...'
+			numPeople+=1
+			p2 = Person(str(numPeople))
+			p2.addFaces((face, encoding))
+			people.append(p2)
 
 	return (people, numPeople)
 

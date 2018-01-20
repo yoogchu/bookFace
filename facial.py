@@ -3,10 +3,10 @@ import cv2
 import face_recognition
 import compare_face as cf
 
-face_folder = "faces/"
 cap = cv2.VideoCapture("fuhax.mov")
-(major_ver, minor_ver, subminor_ver) = (cv2.__version__).split('.')
+face_folder = "faces/"
 
+(major_ver, minor_ver, subminor_ver) = (cv2.__version__).split('.')
 if int(major_ver)  < 3 :
     fps = cap.get(cv2.cv.CV_CAP_PROP_FPS)
     print("Frames per second using video.get(cv2.cv.CV_CAP_PROP_FPS): {0}".format(fps))
@@ -14,6 +14,8 @@ else :
     fps = cap.get(cv2.CAP_PROP_FPS)
     print("Frames per second using video.get(cv2.CAP_PROP_FPS) : {0}".format(fps))
 
+cv2.namedWindow('image',cv2.WINDOW_NORMAL)
+cv2.resizeWindow('image', 600,600)
 
 # Initialize some variables
 face_locations = []
@@ -63,7 +65,7 @@ while True:
             #cv2.waitKey(0)
 
         # Display the resulting image
-        cv2.imshow('Video', frame)
+        cv2.imshow('image', frame)
 
         # Hit 'q' on the keyboard to quit!
         if cv2.waitKey(1) & 0xFF == ord('q'):
