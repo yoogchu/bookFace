@@ -1,9 +1,10 @@
 import numpy as np
 import cv2
 import face_recognition
+import compare_face as cf
 
 face_folder = "faces/"
-cap = cv2.VideoCapture("testvid.mov")
+cap = cv2.VideoCapture("fuhax.mov")
 (major_ver, minor_ver, subminor_ver) = (cv2.__version__).split('.')
 
 if int(major_ver)  < 3 :
@@ -19,54 +20,67 @@ face_locations = []
 face_encodings = []
 face_names = []
 process_this_frame = True
-frame_count = 0;
-count = 0;
+frame_count = 0
+people = ([], 0)
+
 while True:
     # Grab a single frame of video
     ret, frame = cap.read()
+    if ret:
 
-    # Resize frame of video to 1/4 size for faster face recognition processing
-    small_frame = cv2.resize(frame, (0, 0), fx=0.25, fy=0.25)
+        # Resize frame of video to 1/4 size for faster face recognition processing
+        small_frame = cv2.resize(frame, (0, 0), fx=0.25, fy=0.25)
 
-    # Convert the image from BGR color (which OpenCV uses) to RGB color (which face_recognition uses)
-    rgb_small_frame = small_frame[:, :, ::-1]
+        # Convert the image from BGR color (which OpenCV uses) to RGB color (which face_recognition uses)
+        rgb_small_frame = small_frame[:, :, ::-1]
 
-    # Only process every other frame of video to save time
-    if process_this_frame:
-        # Find all the faces and face encodings in the current frame of video
-        face_locations = face_recognition.face_locations(rgb_small_frame)
-        print(face_locations)
-        face_encodings = face_recognition.face_encodings(
-            rgb_small_frame, face_locations)
+        # Only process every other frame of video to save time
+        if process_this_frame:
+            # Find all the faces and face encodings in the current frame of video
+            face_locations = face_recognition.face_locations(rgb_small_frame)
 
-    process_this_frame = not process_this_frame
+            face_encodings = face_recognition.face_encodings(
+                rgb_small_frame, face_locations)
 
-    # Display the results
-    for (top, right, bottom, left) in face_locations:
-        # Scale back up face locations since the frame we detected in was scaled to 1/4 size
-        top *= 4
-        right *= 4
-        bottom *= 4
-        left *= 4
+        process_this_frame = not process_this_frame
 
-        # Draw a box around the face
-        cv2.rectangle(frame, (left, top), (right, bottom), (0, 0, 255), 2)
-        crop = frame[top:bottom, left:right]
-        cv2.imshow('cropped', crop)
-        cv2.imwrite(face_folder+str(count)+'.jpg', crop)
-        count+=1
+        # Display the results
+        for (top, right, bottom, left) in face_locations:
+            # Scale back up face locations since the frame we detected in was scaled to 1/4 size
+            top *= 4
+            right *= 4
+            bottom *= 4
+            left *= 4
 
-        #cv2.waitKey(0)
+            # Draw a box around the face
+            cv2.rectangle(frame, (left, top), (right, bottom), (0, 0, 255), 2)
+            crop = frame[top:bottom, left:right]
 
-    # Display the resulting image
-    cv2.imshow('Video', frame)
+            people = cf.manageFaces(people, crop, face_encodings)
+            # print [len(x.getFaces()) for x in people[0]]
+            cv2.imshow('cropped', crop)
 
-    # Hit 'q' on the keyboard to quit!
-    if cv2.waitKey(1) & 0xFF == ord('q'):
+            #cv2.waitKey(0)
+
+        # Display the resulting image
+        cv2.imshow('Video', frame)
+
+        # Hit 'q' on the keyboard to quit!
+        if cv2.waitKey(1) & 0xFF == ord('q'):
+            break
+    else:
         break
 
-
-
 # Release handle to the webcam
-video_capture.release()
+cap.release()
 cv2.destroyAllWindows()
+
+print 'saving faces...'
+
+for person in people[0]:
+    count = 0
+    for face in person.getFaces():
+        print face_folder+'p'+person.getName()+'_'+str(count)+'.jpg'
+        cv2.imwrite(face_folder+'p'+person.getName()+'_'+str(count)+'.jpg', face[0])
+        count+=1
+
