@@ -1,4 +1,5 @@
 *.mov
 *.jpg
 *.pyc
-
+*.avi
+*.mp4
