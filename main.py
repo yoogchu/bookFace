@@ -65,25 +65,29 @@ def serve_pil_image(pil_img):
 @app.route('/face/<int:face_index>')
 def serve_img(face_index):
     global latestFaces
-    print(len(latestFaces))
-    #img = Image.fromarray(people[i].getFaces()[0][0][:,:,::-1])
-    # print('SERVING IMAGE', file=sys.stderr)
-    # print(str(session['latestFaces']), file=sys.stderr) 
-    # print(str(latestFaces), file=sys.stderr)
     
     if (len(latestFaces) > face_index):
 
         last_face = latestFaces[face_index];
-        print('face_index', file=sys.stderr)
-        print(face_index, file=sys.stderr)
         img = Image.fromarray(last_face[0][:,:,::-1])
-        # img = Image.new('RGB', ...)
+
     else:
         img = Image.open('avatar.png')
         img = img.convert("RGB")
     return serve_pil_image(img)
+@app.route('/ts/<int:face_index>',methods=['GET'])
+def serve_ts(face_index):
+    global latestFaces
 
+    print(str(latestFaces), file=sys.stderr)
 
+    if (len(latestFaces) > face_index):
+
+        last_face = latestFaces[face_index];
+        # print(last_face, file=sys.stderr)
+        return last_face[1]
+    else:
+        return None
 
 if __name__ == '__main__':
     app.secret_key = 'Jason'
