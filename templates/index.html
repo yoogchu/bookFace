@@ -14,6 +14,10 @@
                 width: 100%
             }
 
+            .row {
+                width:100%;
+            }
+
             .face-container {
                 width: 40%;
                 /*height: 20%;*/
@@ -53,9 +57,9 @@
                     <div id="face-3" class="face-container">
                         <img src="/face/3" class="face">
                     </div>
-                    <div>
+                    <!-- <div>
                         <button class="btn" id="refresh-btn">Refresh</button>
-                    </div>
+                    </div> -->
                 <!-- </div> -->
             </div>
         </div>
@@ -83,11 +87,11 @@
                         }
                     }
                 };
-                document.getElementById('refresh-btn').addEventListener('click', function() {
-                        refreshFaces();
-                    }
-                );
-
+                // document.getElementById('refresh-btn').addEventListener('click', function() {
+                //         refreshFaces();
+                //     }
+                // );
+                setInterval(refreshFaces, 2000);
             }) ();
 
 

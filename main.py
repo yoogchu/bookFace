@@ -70,6 +70,7 @@ def serve_img(face_index):
     # print('SERVING IMAGE', file=sys.stderr)
     # print(str(session['latestFaces']), file=sys.stderr) 
     # print(str(latestFaces), file=sys.stderr)
+    
     if (len(latestFaces) > face_index):
 
         last_face = latestFaces[face_index];
