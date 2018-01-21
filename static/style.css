@@ -1,0 +1,87 @@
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, font, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, caption {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	outline: 0;
+	font-size: 100%;
+	vertical-align: baseline;
+	background: transparent;
+}
+
+body {
+	font-family: Poppins;
+}
+.site-wrapper{
+	height: 100%;
+	width: 100%;
+	position: absolute;
+	overflow-x: hidden;
+}
+.container-fluid {
+	padding:0 !important;
+	margin:0 !important;
+	width: 100% !important;
+}
+p {
+	font-size: 12pt;
+	line-height: 180%;
+}
+h1 {
+	font-size: 48px;
+	text-align: center;
+	margin: 20;
+}
+h2 {
+	font-size: 18px;
+}
+h3 {
+	font-size: 14px;
+}
+hr { 
+	display: block;
+	margin-top: 0.25em;
+	margin-bottom: 0.25em;
+	margin-left: auto;
+	margin-right: auto;
+	border-style: inset;
+}
+.header {
+	width: 100%;
+	text-align: center;
+	margin: auto;
+	font-family: Poppins;
+	font-size: 38px;
+	padding: 20px;
+}
+#face-gallery-container {
+	width: 50%;
+	text-align: center;
+	margin: 0;
+	display: inline-block;
+	padding: 10px;
+}
+.face-container {
+    width: 150px;
+    height: 150px;
+    display: inline-block;
+}
+.face-container < img {
+	width: 10%;
+}
+.face {
+    width: 100%;
+}
+#video-feed-container {
+	width: 50%;
+	margin: 0;
+	display: inline-block;
+	position: relative;
+	float: left;
+	padding: 10px;
+}
+#bg {
+	width: 98%;
+}
+.row {
+	width:100%;
+}

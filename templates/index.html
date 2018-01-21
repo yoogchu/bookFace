@@ -1,6 +1,10 @@
-<html>
-    <head>
-        <title>Video Streaming Demonstration</title>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, user-scalable=no"/>
+        <title>bookFace</title>
 
         <!-- bootstrap stuff -->
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
@@ -8,61 +12,34 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 
-        <!-- custom css -->
-        <style type="text/css">
-            #bg {
-                width: 100%
-            }
+        <link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}">
 
-            .row {
-                width:100%;
-            }
-
-            .face-container {
-                width: 40%;
-                /*height: 20%;*/
-                display: inline-block;
-            }
-
-            .face {
-                width: 100%;
-                /*height: 100%;*/
-            }
-        </style>
-
-
+        <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Poppins" rel="stylesheet">
 
     </head>
     <body>
-        <div>
-            <h1>Video Streaming Demonstration</h1>
-        </div>
-        <div class="row">
-            <div class="col-md-8" id="video-feed-container">
+        <div class ='header'><h1>Book Face</h1></div>
+
+            <div id="video-feed-container">
                 <!-- Video feed container -->
                 <img id="bg" src="{{ url_for('video_feed') }}">
             </div>
-            <div class="col-md-4" id="face-gallery-container">
                 <!-- Container for all faces -->
-                <!-- <div class="row"> -->
-                    <div id="face-0" class="face-container">
-                        <img src="/face/0" class="face">
-                    </div>
-                    <div id="face-1" class="face-container">
-                        <img src="/face/1" class="face">
-                    </div>
-                    <div id="face-2" class="face-container">
-                        <img src="/face/2" class="face">
-                    </div>
-                    <div id="face-3" class="face-container">
-                        <img src="/face/3" class="face">
-                    </div>
-                    <!-- <div>
-                        <button class="btn" id="refresh-btn">Refresh</button>
-                    </div> -->
-                <!-- </div> -->
+            <div id="face-gallery-container">
+                <div id="face-0" class="face-container">
+                    <img src="/face/0" class="face">
+                </div>
+                <div id="face-1" class="face-container">
+                    <img src="/face/1" class="face">
+                </div>
+                <div id="face-2" class="face-container">
+                    <img src="/face/2" class="face">
+                </div>
+                <div id="face-3" class="face-container">
+                    <img src="/face/3" class="face">
+                </div>
             </div>
-        </div>
 
 
         <script type="text/javascript">
@@ -80,17 +57,12 @@
                                     const face = containerChildren[j];
                                     console.log(face);
                                     const source = face.src;
-                                    // face.src = 'http://live.swamphacks.com/img/marstonfirst.png'
                                     face.src = source.split('?')[0] + '?lastmod=' + Math.random();
                                 }
                             }
                         }
                     }
                 };
-                // document.getElementById('refresh-btn').addEventListener('click', function() {
-                //         refreshFaces();
-                //     }
-                // );
                 setInterval(refreshFaces, 2000);
             }) ();
 
