@@ -16,7 +16,7 @@ def manageFaces(people, encoding):
 	b = sorted(enumerate(a),key=lambda x:x[1])
 	print b
 
-	if b[0][1] < .62:
+	if b[0][1] < .53:
 		people[b[0][0]].addEncoding(encoding)
 		name = people[b[0][0]].getName()
 		

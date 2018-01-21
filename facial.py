@@ -13,7 +13,7 @@ except Exception:
 
 # cap = cv2.VideoCapture(video)
 cap = cv2.VideoCapture(0)
-# 
+
 
 (major_ver, minor_ver, subminor_ver) = (cv2.__version__).split('.')
 if int(major_ver)  < 3 :
@@ -107,11 +107,11 @@ for person in people:
     count = 0
     for face in person.getFaces():
         count+=1
-
+        # print face_folder+person.getName()+'_'+str(count)+'.jpg'
+        # cv2.imwrite(face_folder+person.getName()+'_'+str(count)+'.jpg', face)
         if count % 5 == 0:
             print face_folder+person.getName()+'_'+str(count/5)+'.jpg'
             cv2.imwrite(face_folder+person.getName()+'_'+str(count/5)+'.jpg', face)
             
         else:
             continue
-
