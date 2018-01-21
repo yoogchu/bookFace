@@ -19,9 +19,14 @@ people = []
 webcam=True
 folder='faces'
 
+def update():
+	lmain.after(1, show_frame())
+	lmain2.after(1, refreshPeople(people))
+	root.after(5, update)
+
 def show_frame():
-	global people	
-	
+	global people
+
 	(frame, people) = facial.recog(people, cap)
 	# frame = cv2.flip(frame, 1)
 	cv2image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGBA)
@@ -30,7 +35,6 @@ def show_frame():
 	
 	lmain.imgtk = imgtk
 	lmain.configure(image=imgtk)
-	lmain.after(10, show_frame)
 
 def close_window(people):
 	root.quit()
@@ -50,20 +54,16 @@ lmain2.pack(side=tk.RIGHT)
 
 def refreshPeople(people):
 	person=0
+	
 	for r in range(4):
 		for c in range(3):
 			try:
-				print [person.getName() for person in people]
-				tk.Label(lmain2, text='%s, %s'%('Person', str(person)), borderwidth=1 ).grid(row=r,column=c)
 				tk.Label(lmain2, text='%s'%(people[r+c].getName()), borderwidth=1).grid(row=r, column=c)
-				person+=1
 			except Exception as e:
-				pass
+				tk.Label(lmain2, text='%s'%('unknown'), borderwidth=1).grid(row=r, column=c)
 			# img = Image.fromarray()
 			# imgtk = ImageTk.PhotoImage(image=img)
 			# tk.Label(lmain2, text='%s, %s'%('Person', str(person)), borderwidth=1 ).grid(row=r,column=c)
-
-lmain2.after(10, refreshPeople(people))
-show_frame()
+root.after(50, update)
 root.mainloop()
 
