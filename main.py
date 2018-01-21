@@ -78,7 +78,7 @@ def serve_img(face_index):
         img = Image.fromarray(last_face[0][:,:,::-1])
         # img = Image.new('RGB', ...)
     else:
-        img = img = Image.new('RGB', (800,1280), (255, 0, 255))
+        img = img = Image.new('RGB', (800,800), (255, 0, 255))
     return serve_pil_image(img)
 
 

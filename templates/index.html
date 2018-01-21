@@ -26,9 +26,7 @@
             }
         </style>
 
-        <script type="text/javascript">
-            
-        </script>
+
 
     </head>
     <body>
@@ -49,8 +47,50 @@
                     <div id="face-1" class="face-container">
                         <img src="/face/1" class="face">
                     </div>
+                    <div id="face-2" class="face-container">
+                        <img src="/face/2" class="face">
+                    </div>
+                    <div id="face-3" class="face-container">
+                        <img src="/face/3" class="face">
+                    </div>
+                    <div>
+                        <button class="btn" id="refresh-btn">Refresh</button>
+                    </div>
                 <!-- </div> -->
             </div>
         </div>
+
+
+        <script type="text/javascript">
+            (function () {
+
+                refreshFaces = function() {
+                    console.log('refreshing faces');
+                    const faceContainers = document.getElementById('face-gallery-container').childNodes;
+                    for (var i = faceContainers.length - 1; i >= 0; i--) {
+                        const container = faceContainers[i];
+                        if (faceContainers[i].className === 'face-container') {
+                            const containerChildren = container.childNodes;
+                            for (var j = containerChildren.length - 1; j >= 0; j--) {
+                                if (containerChildren[j].className === 'face') {
+                                    const face = containerChildren[j];
+                                    console.log(face);
+                                    const source = face.src;
+                                    // face.src = 'http://live.swamphacks.com/img/marstonfirst.png'
+                                    face.src = source.split('?')[0] + '?lastmod=' + Math.random();
+                                }
+                            }
+                        }
+                    }
+                };
+                document.getElementById('refresh-btn').addEventListener('click', function() {
+                        refreshFaces();
+                    }
+                );
+
+            }) ();
+
+
+        </script>
   </body>
 </html>
