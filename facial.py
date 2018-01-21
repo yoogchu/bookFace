@@ -5,43 +5,17 @@ import compare_face as cf
 import os
 import glob
 
-def recog(webcam=True, video_name = 'fuhax.mov'):
-    if webcam:
-        cap = cv2.VideoCapture(0)
-        video_name = 'webcam'
-    else:
-        cap = cv2.VideoCapture(video_name)
-
-    (major_ver, minor_ver, subminor_ver) = (cv2.__version__).split('.')
-    if int(major_ver)  < 3 :
-        fps = cap.get(cv2.cv.CV_CAP_PROP_FPS)
-        print("Frames per second using video.get(cv2.cv.CV_CAP_PROP_FPS): {0}".format(fps))
-    else :
-        fps = cap.get(cv2.CAP_PROP_FPS)
-        print("Frames per second using video.get(cv2.CAP_PROP_FPS) : {0}".format(fps))
-
-    # cv2.namedWindow('image',cv2.WINDOW_NORMAL)
-    # cv2.resizeWindow('image', 600,600)
+def recog(people, cap, webcam=True, video_name = 'fuhax.mov'):
 
     # Initialize some variables
-    people = []
     face_locations = []
     face_encodings = []
 
     process_frame = True
 
-    # while True:
-
     # Grab a single frame of video
     ret, frame = cap.read()
     if ret:
-        # Hit 'q' on the keyboard to quit!
-        if cv2.waitKey(1) & 0xFF == ord('q'):
-            if webcam:
-                return saveFaces(people)
-            else:
-                return saveFaces(people, video_name=video_name, webcam=False)
-
         face_names = []
         # Resize frame of video to 1/4 size for faster face recognition processing
         small_frame = cv2.resize(frame, (0, 0), fx=0.25, fy=0.25)
@@ -78,25 +52,14 @@ def recog(webcam=True, video_name = 'fuhax.mov'):
             cv2.rectangle(frame, (left, bottom - 35), (right, bottom), (0, 0, 255), cv2.FILLED)
             font = cv2.FONT_HERSHEY_DUPLEX
             cv2.putText(frame, name, (left + 6, bottom - 6), font, 1.0, (255, 255, 255), 1)
-        return frame, people
+        return frame[:,:,::-1], people
 
-    #         # Display the resulting image
-    #         cv2.imshow('image', frame)
-
-
-    #     else:
-    #         break
-
-    # cap.release()
-    # cv2.destroyAllWindows()
-
-def saveFaces(people, video_name='webcam', webcam=True):
+def save_faces(people, folder='webcam', webcam=True):
     try:
-        face_folder = video_name[0:video_name.index('.')]+'/'
+        face_folder = folder[0:folder.index('.')]+'/'
     except Exception:
-        face_folder = video_name+'/'
+        face_folder = folder+'/'
 
-    print 'Saving Faces..'
     if not os.path.exists(face_folder):
         try:
             os.mkdir(face_folder)
