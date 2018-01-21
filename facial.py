@@ -2,9 +2,18 @@ import numpy as np
 import cv2
 import face_recognition
 import compare_face as cf
+import os
+import glob
 
-cap = cv2.VideoCapture("fuhax.mov")
-face_folder = "faces/"
+video = 'webcam'
+try:
+    face_folder = video[0:video.index('.')]+'/'
+except Exception:
+    face_folder = video+'/'
+
+# cap = cv2.VideoCapture(video)
+cap = cv2.VideoCapture(0)
+
 
 (major_ver, minor_ver, subminor_ver) = (cv2.__version__).split('.')
 if int(major_ver)  < 3 :
@@ -20,16 +29,16 @@ cv2.resizeWindow('image', 600,600)
 # Initialize some variables
 face_locations = []
 face_encodings = []
-face_names = []
+
 process_this_frame = True
 frame_count = 0
-people = ([], 0)
-
+people = []
 while True:
+    
     # Grab a single frame of video
     ret, frame = cap.read()
     if ret:
-
+        face_names = []
         # Resize frame of video to 1/4 size for faster face recognition processing
         small_frame = cv2.resize(frame, (0, 0), fx=0.25, fy=0.25)
 
@@ -40,14 +49,15 @@ while True:
         if process_this_frame:
             # Find all the faces and face encodings in the current frame of video
             face_locations = face_recognition.face_locations(rgb_small_frame)
-
-            face_encodings = face_recognition.face_encodings(
-                rgb_small_frame, face_locations)
+            face_encodings = face_recognition.face_encodings(rgb_small_frame, face_locations)
+            
+            for face_encoding in face_encodings:
+                people, name = cf.manageFaces(people, face_encoding)
+                face_names.append(name)
 
         process_this_frame = not process_this_frame
-
         # Display the results
-        for (top, right, bottom, left) in face_locations:
+        for (top, right, bottom, left), name in zip(face_locations, face_names):
             # Scale back up face locations since the frame we detected in was scaled to 1/4 size
             top *= 4
             right *= 4
@@ -56,13 +66,16 @@ while True:
 
             # Draw a box around the face
             cv2.rectangle(frame, (left, top), (right, bottom), (0, 0, 255), 2)
+
+        
             crop = frame[top:bottom, left:right]
-
-            people = cf.manageFaces(people, crop, face_encodings)
-            # print [len(x.getFaces()) for x in people[0]]
-            cv2.imshow('cropped', crop)
-
-            #cv2.waitKey(0)
+            p = cf.Person.getPerson(name, people)
+            p.addFace(crop)
+            # # Label
+            cv2.rectangle(frame, (left, bottom - 35), (right, bottom), (0, 0, 255), cv2.FILLED)
+            font = cv2.FONT_HERSHEY_DUPLEX
+            cv2.putText(frame, name, (left + 6, bottom - 6), font, 1.0, (255, 255, 255), 1)
+            # cv2.imshow('cropped', crop)
 
         # Display the resulting image
         cv2.imshow('image', frame)
@@ -77,12 +90,28 @@ while True:
 cap.release()
 cv2.destroyAllWindows()
 
+
 print 'saving faces...'
 
-for person in people[0]:
+if not os.path.exists(face_folder):
+    print 'trying to make: ' + face_folder
+    try:
+        os.mkdir(face_folder)
+    except OSError as e:
+        print e
+else:
+    print 'deleting faces that already exist...'
+    for f in glob.glob(face_folder+'*'):
+        os.remove(f)
+for person in people:
     count = 0
     for face in person.getFaces():
-        print face_folder+'p'+person.getName()+'_'+str(count)+'.jpg'
-        cv2.imwrite(face_folder+'p'+person.getName()+'_'+str(count)+'.jpg', face[0])
         count+=1
-
+        # print face_folder+person.getName()+'_'+str(count)+'.jpg'
+        # cv2.imwrite(face_folder+person.getName()+'_'+str(count)+'.jpg', face)
+        if count % 5 == 0:
+            print face_folder+person.getName()+'_'+str(count/5)+'.jpg'
+            cv2.imwrite(face_folder+person.getName()+'_'+str(count/5)+'.jpg', face)
+            
+        else:
+            continue
