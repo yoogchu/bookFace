@@ -5,8 +5,8 @@ import compare_face as cf
 import os
 import glob
 
-def face_recognition(webcam=True, video_name = 'fuhax.mov'):
-    if webcam = True:
+def recog(webcam=True, video_name = 'fuhax.mov'):
+    if webcam:
         cap = cv2.VideoCapture(0)
         video_name = 'webcam'
     else:
@@ -24,11 +24,14 @@ def face_recognition(webcam=True, video_name = 'fuhax.mov'):
     # cv2.resizeWindow('image', 600,600)
 
     # Initialize some variables
-    people = [], face_locations = [], face_encodings = []
+    people = []
+    face_locations = []
+    face_encodings = []
+
     process_frame = True
-    
+
     # while True:
-        
+
     # Grab a single frame of video
     ret, frame = cap.read()
     if ret:
@@ -51,13 +54,13 @@ def face_recognition(webcam=True, video_name = 'fuhax.mov'):
             # Find all the faces and face encodings in the current frame of video
             face_locations = face_recognition.face_locations(rgb_small_frame)
             face_encodings = face_recognition.face_encodings(rgb_small_frame, face_locations)
-            
+
             for face_encoding in face_encodings:
                 people, name = cf.manageFaces(people, face_encoding)
                 face_names.append(name)
 
         process_frame = not process_frame
-        
+
         # Display the results
         for (top, right, bottom, left), name in zip(face_locations, face_names):
             # Scale back up face locations since the frame we detected in was scaled to 1/4 size
@@ -80,7 +83,7 @@ def face_recognition(webcam=True, video_name = 'fuhax.mov'):
     #         # Display the resulting image
     #         cv2.imshow('image', frame)
 
-            
+
     #     else:
     #         break
 
