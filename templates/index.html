@@ -19,7 +19,7 @@
 
     </head>
     <body>
-        <div class ='header'><h1>Book Face</h1></div>
+        <div class ='header'><h1>Book of Faces</h1></div>
 
             <div id="video-feed-container">
                 <!-- Video feed container -->
@@ -29,25 +29,44 @@
             <div id="face-gallery-container">
                 <div id="face-0" class="face-container">
                     <img src="/face/0" class="face">
+                    <p id='ts0' class='ts'></p>
                 </div>
                 <div id="face-1" class="face-container">
                     <img src="/face/1" class="face">
+                    <p id='ts1' class='ts'></p>
+
                 </div>
                 <div id="face-2" class="face-container">
                     <img src="/face/2" class="face">
+                    <p id='ts2' class='ts'></p>
+
                 </div>
                 <div id="face-3" class="face-container">
                     <img src="/face/3" class="face">
+                    <p id='ts3' class='ts'></p>
+
                 </div>
+ <!--                <div id="face-4" class="face-container">
+                    <img src="/face/4" class="face">
+                </div>
+                <div id="face-5" class="face-container">
+                    <img src="/face/5" class="face">
+                </div>
+                <div id="face-6" class="face-container">
+                    <img src="/face/6" class="face">
+                </div>
+                <div id="face-7" class="face-container">
+                    <img src="/face/7" class="face">
+                </div> -->
             </div>
 
 
         <script type="text/javascript">
             (function () {
-
                 refreshFaces = function() {
                     console.log('refreshing faces');
                     const faceContainers = document.getElementById('face-gallery-container').childNodes;
+
                     for (var i = faceContainers.length - 1; i >= 0; i--) {
                         const container = faceContainers[i];
                         if (faceContainers[i].className === 'face-container') {
@@ -55,14 +74,29 @@
                             for (var j = containerChildren.length - 1; j >= 0; j--) {
                                 if (containerChildren[j].className === 'face') {
                                     const face = containerChildren[j];
-                                    console.log(face);
                                     const source = face.src;
+
                                     face.src = source.split('?')[0] + '?lastmod=' + Math.random();
                                 }
                             }
                         }
                     }
-                };
+                    // const timestamps = document.getElementsByClassName('ts');
+                    // console.log(timestamps);
+                    // for (i = 0;i<timestamps.length;i++) {
+                    //     console.log(timestamps[i]);
+                    //     try{
+                    //         fetch('/ts/'+i).then(function(res){
+                    //             console.log(res);
+                    //             timestamps[i].innerHTML = res.request.body.toString();
+                    //             console.log(timestamps[i]);
+
+                    //         });
+                    //     } catch(e) {
+                    //         console.log('could not get ts');
+                    //     }
+                    // }                 
+                }
                 setInterval(refreshFaces, 2000);
             }) ();
 
