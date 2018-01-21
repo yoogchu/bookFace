@@ -61,8 +61,8 @@ hr {
 	padding: 10px;
 }
 .face-container {
-    width: 150px;
-    height: 150px;
+    width: 200px;
+    height: 200px;
     display: inline-block;
 }
 .face-container < img {
@@ -80,7 +80,7 @@ hr {
 	padding: 10px;
 }
 #bg {
-	width: 98%;
+	width: 100%;
 }
 .row {
 	width:100%;

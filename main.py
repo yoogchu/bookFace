@@ -15,7 +15,8 @@
 # 3. Navigate the browser to the local webpage.
 from __future__ import print_function
 from flask import Flask, render_template, Response, send_file, session
-from camera import VideoCamera
+from camera import VideoCamera, VideoFeedback
+import subprocess
 from PIL import Image
 import os.path
 import cv2
@@ -38,7 +39,7 @@ def index():
 def gen(camera):
     global latestFaces
     count = 0
-    out = cv2.VideoWriter('testvideo.mp4', cv2.VideoWriter_fourcc('M', 'P', 'J', 'G'), camera.get_fps()/2 - 9, (1280,720),True)    
+    out = cv2.VideoWriter('full_out_video.mp4', cv2.VideoWriter_fourcc('M', 'P', 'J', 'G'), camera.get_fps()/2 - 9, (1280,720),True)    
     while True:
         real_frame = camera.get_frame()[0]
         ret, jpeg = cv2.imencode('.jpg', real_frame)
@@ -49,8 +50,16 @@ def gen(camera):
         if out.isOpened():
             out.write(real_frame)
 
-            if (count > 180):
+            if (count % 50 == 0):
                 out.release()
+                cmd_str = "ffmpeg -i full_out_video.mp4 -vcodec h264 -s 160x90 current_low_output.mp4 -y"
+                subprocess.Popen(
+                [cmd_str],
+                stdout=subprocess.PIPE, shell=True)
+        else:
+            if os.path.exists("full_out_video.mp4"):
+                os.remove("full_out_video.mp4")
+            out = cv2.VideoWriter('full_out_video.mp4', cv2.VideoWriter_fourcc('M', 'P', 'J', 'G'), camera.get_fps()/2 - 9, (1280,720),True)    
 
         yield (b'--frame\r\n'
                b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n\r\n')
@@ -63,6 +72,16 @@ def gen(camera):
         # print len(latestFaces);
 
         # print [len(person.getFaces()[0]) for person in people]
+
+def gen_feed(camera):
+    while True:
+        real_frame = camera.get_frame()
+        ret, jpeg = cv2.imencode('.jpg', real_frame)
+        frame = jpeg.tobytes()
+
+        yield (b'--frame\r\n'
+               b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n\r\n')
+
 
 @app.route('/video_feed')
 def video_feed():
@@ -109,8 +128,8 @@ def serve_ts(face_index):
         return None
 
 if __name__ == '__main__':
-    if os.path.exists("testvideo.mp4"):
-        os.remove("testvideo.mp4")
+    if os.path.exists("full_out_video.mp4"):
+        os.remove("full_out_video.mp4")
     app.secret_key = 'Jason'
     app.run(host='0.0.0.0', debug=True, threaded=True)
 

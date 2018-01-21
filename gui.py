@@ -7,14 +7,14 @@ import threading
 
 # class videoStream(threading.Thread):
 	# def __init__(self):
-		
+
 # Layout setup
-width, height = 600, 600
+width, height = 400, 400
 cap = cv2.VideoCapture(0)
 cap.set(cv2.CAP_PROP_FRAME_WIDTH, width)
 cap.set(cv2.CAP_PROP_FRAME_HEIGHT, height)
 
-# Important variables 
+# Important variables
 people = []
 webcam=True
 folder='faces'
@@ -23,7 +23,7 @@ def update():
 	lmain.after(1, show_frame())
 	lmain2.after(1, refreshPeople(people))
 	# root.after(2000, facial.save_faces(people,folder=folder,webcam=webcam))
-	root.after(500, update)
+	root.after(5, update)
 
 def show_frame():
 	global people
@@ -31,7 +31,7 @@ def show_frame():
 	(frame, people) = facial.recog(people, cap)
 	img = Image.fromarray(frame)
 	imgtk = ImageTk.PhotoImage(image=img)
-	
+
 	lmain.imgtk = imgtk
 	lmain.configure(image=imgtk)
 
@@ -48,9 +48,24 @@ root.title('Gotcha Bitch!')
 root.geometry('800x800')
 lmain = tk.Label(root)
 lmain2 = tk.Label(root)
+lmain3 = tk.Label(root)
+
+
+
+
+
 lmain.pack(side=tk.LEFT)
 lmain2.pack(side=tk.RIGHT)
+lmain3.pack(side=tk.RIGHT)
+
+
+lmain.config(width=400, height=400)
 lmain2.config(width=600, height=600)
+lmain3.config(width=600, height=600)
+
+labels = []
+labels.append(lmain2)
+labels.append(lmain3)
 
 def refreshPeople(people):
 	print [person.getName() for person in people]
@@ -59,11 +74,10 @@ def refreshPeople(people):
 	try:
 		if people:
 			for i in range(len(people)):
-				tk.Label(lmain2, text='%s'%(people[i].getName()+'\n'), borderwidth=1)
 				img = Image.fromarray(people[i].getFaces()[0][0][:,:,::-1])
 				imgtk = ImageTk.PhotoImage(image=img)
-				lmain2.imgtk = imgtk
-				lmain2.configure(image=imgtk)
+				labels[i].imgtk = imgtk
+				labels[i].configure(image=imgtk)
 			# exit()
 
 			# if people[r+c].getName() == 'p0':
@@ -76,8 +90,7 @@ def refreshPeople(people):
 
 	except Exception as e:
 		pass
-			
+
 
 root.after(10, update)
 root.mainloop()
-
