@@ -54,7 +54,7 @@ def recog(people, cap, webcam=True, video_name = 'fuhax.mov'):
             cv2.rectangle(frame, (left, bottom - 35), (right, bottom), (0, 0, 255), cv2.FILLED)
             font = cv2.FONT_HERSHEY_DUPLEX
             cv2.putText(frame, name, (left + 6, bottom - 6), font, 1.0, (255, 255, 255), 1)
-        return frame[:,:,::-1], people
+        return frame, people
 
 def save_faces(people, folder='webcam', webcam=True):
     try:

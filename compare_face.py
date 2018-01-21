@@ -4,7 +4,7 @@ import face_recognition
 
 def manageFaces(people, encoding):
 
-	print ([person.getNumFrames() for person in people], len(people), len(encoding))
+	#print ([person.getNumFrames() for person in people], len(people), len(encoding))
 
 	if not people:
 		print 'people is empty.. creating'
