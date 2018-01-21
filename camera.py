@@ -9,12 +9,17 @@ class VideoCamera(object):
         # instead.
         self.video = cv2.VideoCapture(0)
         self.people = []
+
+        self.count = 0
         # If you decide to use video.mp4, you must have this file in the folder
         # as the main.py.
         # self.video = cv2.VideoCapture('video.mp4')
 
     def __del__(self):
         self.video.release()
+
+    def get_fps(self):
+        return self.video.get(cv2.CAP_PROP_FPS)
 
     def get_frame(self):
         (image, people) = facial.recog(self.people, self.video)
@@ -23,5 +28,4 @@ class VideoCamera(object):
         # We are using Motion JPEG, but OpenCV defaults to capture raw images,
         # so we must encode it into JPEG in order to correctly display the
         # video stream.
-        ret, jpeg = cv2.imencode('.jpg', image)
-        return (jpeg.tobytes(), people)
+        return (image, people)

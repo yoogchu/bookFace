@@ -17,16 +17,17 @@ from __future__ import print_function
 from flask import Flask, render_template, Response, send_file, session
 from camera import VideoCamera
 from PIL import Image
+import os.path
+import cv2
 from io import BytesIO
 
 import sys
 
 
-
-
 people = []
-
 latestFaces = []
+
+
 
 app = Flask(__name__)
 
@@ -36,8 +37,21 @@ def index():
 
 def gen(camera):
     global latestFaces
+    count = 0
+    out = cv2.VideoWriter('testvideo.mp4', cv2.VideoWriter_fourcc('M', 'P', 'J', 'G'), camera.get_fps()/2 - 9, (1280,720),True)    
     while True:
-        frame = camera.get_frame()[0]
+        real_frame = camera.get_frame()[0]
+        ret, jpeg = cv2.imencode('.jpg', real_frame)
+        frame = jpeg.tobytes()
+
+        count = count + 1;
+
+        if out.isOpened():
+            out.write(real_frame)
+
+            if (count > 180):
+                out.release()
+
         yield (b'--frame\r\n'
                b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n\r\n')
         people = camera.get_frame()[1]
@@ -65,17 +79,17 @@ def serve_pil_image(pil_img):
 @app.route('/face/<int:face_index>')
 def serve_img(face_index):
     global latestFaces
-    print(len(latestFaces))
+  #  print(len(latestFaces))
     #img = Image.fromarray(people[i].getFaces()[0][0][:,:,::-1])
     # print('SERVING IMAGE', file=sys.stderr)
     # print(str(session['latestFaces']), file=sys.stderr) 
     # print(str(latestFaces), file=sys.stderr)
-    
+
     if (len(latestFaces) > face_index):
 
         last_face = latestFaces[face_index];
-        print('face_index', file=sys.stderr)
-        print(face_index, file=sys.stderr)
+      #  print('face_index', file=sys.stderr)
+      #  print(face_index, file=sys.stderr)
         img = Image.fromarray(last_face[0][:,:,::-1])
         # img = Image.new('RGB', ...)
     else:
@@ -86,6 +100,8 @@ def serve_img(face_index):
 
 
 if __name__ == '__main__':
+    if os.path.exists("testvideo.mp4"):
+        os.remove("testvideo.mp4")
     app.secret_key = 'Jason'
     app.run(host='0.0.0.0', debug=True, threaded=True)
 
