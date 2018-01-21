@@ -2,7 +2,12 @@ import Tkinter as tk
 import cv2
 from PIL import Image, ImageTk
 import facial
+import compare_face
+import threading
 
+# class videoStream(threading.Thread):
+	# def __init__(self):
+		
 # Layout setup
 width, height = 600, 600
 cap = cv2.VideoCapture(0)
@@ -30,28 +35,35 @@ def show_frame():
 def close_window(people):
 	root.quit()
 	print 'Exiting...'
-
 	print 'Saving faces in: '+folder
-	facial.save_faces(people,folder=folder,webcam=webcam,)
-
+	facial.save_faces(people,folder=folder,webcam=webcam)
 
 # Tkinkter
 root = tk.Tk()
 root.bind('<Escape>', lambda e: close_window(people))
 root.title('Gotcha Bitch!')
-root.geometry('1280x800')
+# root.geometry('1280x800')
 lmain = tk.Label(root)
 lmain2 = tk.Label(root)
 lmain.pack(side=tk.LEFT)
 lmain2.pack(side=tk.RIGHT)
-person = 0 
-for r in range(4):
-	for c in range(4):
-		tk.Label(lmain2, text='%s, %s'%('Person', str(person)), borderwidth=1 ).grid(row=r,column=c)
-		person+=1
 
+def refreshPeople(people):
+	person=0
+	for r in range(4):
+		for c in range(3):
+			try:
+				print [person.getName() for person in people]
+				tk.Label(lmain2, text='%s, %s'%('Person', str(person)), borderwidth=1 ).grid(row=r,column=c)
+				tk.Label(lmain2, text='%s'%(people[r+c].getName()), borderwidth=1).grid(row=r, column=c)
+				person+=1
+			except Exception as e:
+				pass
+			# img = Image.fromarray()
+			# imgtk = ImageTk.PhotoImage(image=img)
+			# tk.Label(lmain2, text='%s, %s'%('Person', str(person)), borderwidth=1 ).grid(row=r,column=c)
 
+lmain2.after(10, refreshPeople(people))
 show_frame()
 root.mainloop()
-
 

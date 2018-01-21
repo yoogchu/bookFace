@@ -4,6 +4,8 @@ import face_recognition
 import compare_face as cf
 import os
 import glob
+from datetime import datetime
+
 
 def recog(people, cap, webcam=True, video_name = 'fuhax.mov'):
 
@@ -47,7 +49,7 @@ def recog(people, cap, webcam=True, video_name = 'fuhax.mov'):
             cv2.rectangle(frame, (left, top), (right, bottom), (0, 0, 255), 2)
             crop = frame[top:bottom, left:right]
             p = cf.Person.getPerson(name, people)
-            p.addFace(crop)
+            p.addFace((crop, str(datetime.now())))
 
             cv2.rectangle(frame, (left, bottom - 35), (right, bottom), (0, 0, 255), cv2.FILLED)
             font = cv2.FONT_HERSHEY_DUPLEX
@@ -70,11 +72,12 @@ def save_faces(people, folder='webcam', webcam=True):
             os.remove(f)
     for person in people:
         count = 0
-        for face in person.getFaces():
+        for faces in person.getFaces():
+            face, timestamp = faces
             count+=1
             if webcam:
                 if count % 5 == 0:
-                    print face_folder+person.getName()+'_'+str(count/5)+'.jpg'
+                    print face_folder+person.getName()+'_'+str(count/5)+'.jpg | '+timestamp
                     cv2.imwrite(face_folder+person.getName()+'_'+str(count/5)+'.jpg', face)
                 else:
                     continue
