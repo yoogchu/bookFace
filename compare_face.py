@@ -15,7 +15,7 @@ def manageFaces(people, encoding):
 
 	a = face_recognition.face_distance(list([person.getPersonEncoding() for person in people]), encoding)
 	b = sorted(enumerate(a),key=lambda x:x[1])
-	print b
+	# print b
 
 	if b[0][1] < .53:
 		people[b[0][0]].addEncoding(encoding)

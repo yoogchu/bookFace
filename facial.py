@@ -76,7 +76,7 @@ def save_faces(people, folder='webcam', webcam=True):
             face, timestamp = faces
             count+=1
             if webcam:
-                if count % 5 == 0:
+                if count % 10 == 0:
                     print face_folder+person.getName()+'_'+str(count/5)+'.jpg | '+timestamp
                     cv2.imwrite(face_folder+person.getName()+'_'+str(count/5)+'.jpg', face)
                 else:

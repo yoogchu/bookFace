@@ -22,14 +22,13 @@ folder='faces'
 def update():
 	lmain.after(1, show_frame())
 	lmain2.after(1, refreshPeople(people))
-	root.after(5, update)
+	# root.after(2000, facial.save_faces(people,folder=folder,webcam=webcam))
+	root.after(500, update)
 
 def show_frame():
 	global people
 
 	(frame, people) = facial.recog(people, cap)
-	# frame = cv2.flip(frame, 1)
-	cv2image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGBA)
 	img = Image.fromarray(frame)
 	imgtk = ImageTk.PhotoImage(image=img)
 	
@@ -46,24 +45,39 @@ def close_window(people):
 root = tk.Tk()
 root.bind('<Escape>', lambda e: close_window(people))
 root.title('Gotcha Bitch!')
-# root.geometry('1280x800')
+root.geometry('800x800')
 lmain = tk.Label(root)
 lmain2 = tk.Label(root)
 lmain.pack(side=tk.LEFT)
 lmain2.pack(side=tk.RIGHT)
+lmain2.config(width=600, height=600)
 
 def refreshPeople(people):
-	person=0
-	
-	for r in range(4):
-		for c in range(3):
-			try:
-				tk.Label(lmain2, text='%s'%(people[r+c].getName()), borderwidth=1).grid(row=r, column=c)
-			except Exception as e:
-				tk.Label(lmain2, text='%s'%('unknown'), borderwidth=1).grid(row=r, column=c)
-			# img = Image.fromarray()
-			# imgtk = ImageTk.PhotoImage(image=img)
-			# tk.Label(lmain2, text='%s, %s'%('Person', str(person)), borderwidth=1 ).grid(row=r,column=c)
-root.after(50, update)
+	print [person.getName() for person in people]
+	# for r in range(2):
+		# for c in range(2):
+	try:
+		if people:
+			for i in range(len(people)):
+				tk.Label(lmain2, text='%s'%(people[i].getName()+'\n'), borderwidth=1)
+				img = Image.fromarray(people[i].getFaces()[0][0][:,:,::-1])
+				imgtk = ImageTk.PhotoImage(image=img)
+				lmain2.imgtk = imgtk
+				lmain2.configure(image=imgtk)
+			# exit()
+
+			# if people[r+c].getName() == 'p0':
+			# 	tk.Label(lmain2, bg='red', width=10, height=10).grid(column=c,row=r)
+			# elif people[r+c].getName() == 'p1':
+			# 	tk.Label(lmain2, bg='blue', width=10, height=10).grid(column=c,row=r)
+			# elif people[r+c].getName() == 'p2':
+			# 	tk.Label(lmain2, bg='green', width=10, height=10).grid(column=c,row=r)
+			# tk.Label(lmain2, width=10, height=10, bg="red").grid(column=c,row=r)
+
+	except Exception as e:
+		pass
+			
+
+root.after(10, update)
 root.mainloop()
 
