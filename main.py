@@ -21,6 +21,8 @@ from PIL import Image
 import os.path
 import cv2
 from io import BytesIO
+from flask import request
+
 
 import sys
 
@@ -54,6 +56,17 @@ def gen(camera):
         # print len(latestFaces);
 
         # print [len(person.getFaces()[0]) for person in people]
+
+def shutdown_server():
+    func = request.environ.get('werkzeug.server.shutdown')
+    if func is None:
+        raise RuntimeError('Not running with the Werkzeug Server')
+    func()
+
+@app.route('/shutdown', methods=['GET'])
+def shutdown():
+    shutdown_server()
+    return 'Server shutting down...'
 
 def gen_feed(camera):
     while True:
