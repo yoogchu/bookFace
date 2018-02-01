@@ -38,28 +38,10 @@ def index():
 
 def gen(camera):
     global latestFaces
-    count = 0
-    out = cv2.VideoWriter('full_out_video.mp4', cv2.VideoWriter_fourcc('M', 'P', 'J', 'G'), camera.get_fps()/2 - 9, (1280,720),True)    
     while True:
         real_frame = camera.get_frame()[0]
         ret, jpeg = cv2.imencode('.jpg', real_frame)
         frame = jpeg.tobytes()
-
-        count = count + 1;
-
-        if out.isOpened():
-            out.write(real_frame)
-
-            if (count % 50 == 0):
-                out.release()
-                cmd_str = "ffmpeg -i full_out_video.mp4 -vcodec h264 -s 160x90 current_low_output.mp4 -y"
-                subprocess.Popen(
-                [cmd_str],
-                stdout=subprocess.PIPE, shell=True)
-        else:
-            if os.path.exists("full_out_video.mp4"):
-                os.remove("full_out_video.mp4")
-            out = cv2.VideoWriter('full_out_video.mp4', cv2.VideoWriter_fourcc('M', 'P', 'J', 'G'), camera.get_fps()/2 - 9, (1280,720),True)    
 
         yield (b'--frame\r\n'
                b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n\r\n')
